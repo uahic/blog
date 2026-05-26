@@ -10,7 +10,8 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://example.com',
+  site: 'https://uahic.github.io',
+  base: '/blog',
   integrations: [mdx(), sitemap(), solidJs()],
   markdown: {
     shikiConfig: {
