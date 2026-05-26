@@ -1,15 +1,12 @@
 ---
-import { SITE_TITLE } from "../consts";
 import HeaderLink from "./HeaderLink.astro";
 ---
 
 <header>
 	<nav>
-		<h2><a href="/">{SITE_TITLE}</a></h2>
-		<div class="">
-			<HeaderLink href="/">Home</HeaderLink>
+		<div class="nav-links">
+			<HeaderLink href="/">About</HeaderLink>
 			<HeaderLink href="/blog">Blog</HeaderLink>
-			<HeaderLink href="/about">About</HeaderLink>
 		</div>
 		<div class="social-links">
 			<!-- <a href="https://m.webtoo.ls/@astro" target="_blank">
@@ -30,7 +27,7 @@ import HeaderLink from "./HeaderLink.astro";
 					></path></svg
 				>
 			</a> -->
-			<a
+			<!-- <a
 				href="https://xing.com/profile/Martin_Schulze209"
 				target="_blank"
 			>
@@ -41,7 +38,7 @@ import HeaderLink from "./HeaderLink.astro";
 					height="32"
 					class="xing-icon"
 				/>
-			</a>
+			</a> -->
 			<a href="https://github.com/uahic" target="_blank">
 				<span class="sr-only">Go to my GitHub repo</span>
 				<svg
@@ -61,45 +58,95 @@ import HeaderLink from "./HeaderLink.astro";
 <style>
 	header {
 		margin: 0;
-		padding: 0 1em;
-		/* background: white; */
-		/* box-shadow: 0 2px 8px rgba(var(--black), 5%); */
+		padding: 0 2em;
+		background: rgba(15, 23, 42, 0.85);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+		border-bottom: 1px solid rgba(229, 233, 240, 0.08);
+		position: sticky;
+		top: 0;
+		z-index: 100;
+		box-shadow: 0 2px 24px rgba(0, 0, 0, 0.35);
 	}
 	h2 {
 		margin: 0;
-		font-size: 1em;
+		font-size: 1.1em;
+		font-weight: 700;
+		letter-spacing: -0.01em;
 	}
-
 	h2 a,
 	h2 a.active {
 		text-decoration: none;
+		color: rgb(229, 233, 240);
+		transition: color 0.2s ease;
+	}
+	h2 a:hover {
+		color: var(--accent);
 	}
 	nav {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+		height: 4rem;
+		max-width: 960px;
+		margin: 0 auto;
+	}
+	.nav-links {
+		display: flex;
+		align-items: center;
+		gap: 0.25em;
 	}
 	nav a {
-		padding: 1em 0.5em;
-		color: var(--black);
-		border-bottom: 4px solid transparent;
+		padding: 0.45em 0.75em;
+		color: rgba(229, 233, 240, 0.7);
+		border-bottom: 2px solid transparent;
 		text-decoration: none;
+		font-size: 0.9em;
+		font-weight: 500;
+		border-radius: 6px;
+		transition: color 0.2s ease, background 0.2s ease;
+	}
+	nav a:hover {
+		color: rgb(229, 233, 240);
+		background: rgba(229, 233, 240, 0.06);
 	}
 	nav a.active {
-		text-decoration: none;
-		border-bottom-color: var(--accent);
+		color: var(--accent);
+		background: rgba(46, 148, 21, 0.1);
+		border-bottom: none;
 	}
-	.social-links,
+	.social-links {
+		display: flex;
+		align-items: center;
+		gap: 0.25em;
+	}
 	.social-links a {
 		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0.4em;
+		border-radius: 8px;
+		color: rgba(229, 233, 240, 0.55);
+		transition: color 0.2s ease, background 0.2s ease;
+		border-bottom: none;
+	}
+	.social-links a:hover {
+		color: rgb(229, 233, 240);
+		background: rgba(229, 233, 240, 0.08);
 	}
 	.xing-icon {
-		color: red;
-		fill: rgb(255,0,0);
+		filter: brightness(0.6) saturate(0.8);
+		transition: filter 0.2s ease;
+	}
+	.social-links a:hover .xing-icon {
+		filter: brightness(1) saturate(1);
 	}
 	@media (max-width: 720px) {
 		.social-links {
 			display: none;
+		}
+		header {
+			padding: 0 1em;
 		}
 	}
 </style>

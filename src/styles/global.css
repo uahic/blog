@@ -105,6 +105,15 @@ input {
 }
 table {
 	width: 100%;
+	border-collapse: collapse;
+}
+th,
+td {
+	border: 1px solid rgb(var(--gray));
+	padding: 0.4em 0.8em;
+}
+th {
+	background-color: rgba(var(--gray), 0.2);
 }
 img {
 	max-width: 100%;
@@ -119,6 +128,8 @@ code {
 pre {
 	padding: 1.5em;
 	border-radius: 8px;
+	font-size: 0.75em;
+	overflow-x: auto;
 }
 pre > code {
 	all: unset;

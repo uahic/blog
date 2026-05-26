@@ -1,5 +1,5 @@
 {
-  description = "pnpm dev environment";
+  description = "blog dev environment";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -15,7 +15,7 @@
           packages = with pkgs; [
             nodejs_22
             pnpm
-            jdk21  # or jdk17, jdk23 — match what your project needs
+            jdk21
           ];
         };
       });
