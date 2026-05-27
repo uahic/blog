@@ -1,3 +1,132 @@
 ---
-return Astro.redirect('/');
+import BaseHead from "../components/BaseHead.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+const title = "About";
+const description = "A little bit about me.";
 ---
+
+<html lang="en">
+    <head>
+        <BaseHead title={title} description={description} />
+        <style>
+            .about-header {
+                margin-bottom: 2em;
+            }
+            .about-header h1 {
+                margin-bottom: 0.25em;
+            }
+            .subtitle {
+                color: rgb(var(--gray));
+                font-size: 1.1em;
+                margin: 0;
+            }
+            section {
+                margin-bottom: 2.5em;
+            }
+            section h2 {
+                font-size: 1.563em;
+                border-bottom: 1px solid rgb(var(--gray-light));
+                padding-bottom: 0.25em;
+                margin-bottom: 0.75em;
+            }
+            .tags {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5em;
+                margin-top: 0.5em;
+            }
+            .tag {
+                background-color: rgba(var(--gray), 0.2);
+                border: 1px solid rgba(var(--gray), 0.4);
+                border-radius: 4px;
+                padding: 0.2em 0.6em;
+                font-size: 0.85em;
+            }
+            .contact-list {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+            .contact-list li {
+                margin-bottom: 0.4em;
+            }
+        </style>
+    </head>
+
+    <body>
+        <Header />
+        <main>
+            <div class="about-header">
+                <h1>About</h1>
+                <p class="subtitle">
+                    AI researcher/engineer · Robotics engineer · 
+                </p>
+                <p class="subtitle">
+                    Commodities speculator ·
+                    Amateur musician
+                </p>
+            </div>
+
+            <section>
+                <h2>Hey, I'm Martin</h2>
+                <p>
+                    I'm passionate about artificial intelligence, mathematics,
+                    engineering and classical music composition.
+                </p>
+                <p>
+                    Currently, my interests revolve around modifications of
+                    transformer-based architectures and how to integrate
+                    brain-like memory management, consolidation, replay.
+                    Moreover, I enjoy experimenting with mathematically grounded
+                    processes such as diffusion, reinforcement-learning and
+                    neuroscientific-inspired local learning algorithms and
+                    architectures (such as Numenta's HTMs and associative
+                    learning).
+                </p>
+                <p></p>
+            </section>
+
+            <section>
+                <h2>What I work with</h2>
+                <p>Technologies and tools I use regularly:</p>
+                <div class="tags">
+                    <span class="tag">Python (PyTorch, Jax)</span>
+                    <span class="tag">TypeScript</span>
+                    <span class="tag">Java</span>
+                    <span class="tag">C++</span>
+                    <span class="tag">Linux (Ubuntu, NixOS, Debian)</span>
+                    <span class="tag">Docker</span>
+                    <span class="tag">Podman</span>
+                    <span class="tag">SLURM</span>
+                    <span class="tag">MuJoCo</span>
+                    <span class="tag">Gazebo</span>
+                    <span class="tag">Isaac Sim</span>
+                </div>
+            </section>
+
+            <section>
+                <h2>This blog</h2>
+                <p>
+                    This blog is intended to share and discuss contributions to
+                    open source projects, experiences in DIY projects, tutorials
+                    and sometimes thoughts on various topics.
+                </p>
+            </section>
+
+            <section>
+                <h2>Get in touch</h2>
+                <ul class="contact-list">
+                    <li>
+                        GitHub: <a
+                            href="https://github.com/uahic"
+                            target="_blank"
+                            rel="noopener noreferrer">@uahic</a>
+                    </li>
+                </ul>
+            </section>
+        </main>
+        <Footer />
+    </body>
+</html>

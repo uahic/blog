@@ -21,14 +21,14 @@
 }
 @font-face {
 	font-family: "Atkinson";
-	src: url("/fonts/atkinson-regular.woff") format("woff");
+	src: url("/blog/fonts/atkinson-regular.woff") format("woff");
 	font-weight: 400;
 	font-style: normal;
 	font-display: swap;
 }
 @font-face {
 	font-family: "Atkinson";
-	src: url("/fonts/atkinson-bold.woff") format("woff");
+	src: url("/blog/fonts/atkinson-bold.woff") format("woff");
 	font-weight: 700;
 	font-style: normal;
 	font-display: swap;
@@ -106,6 +106,8 @@ input {
 table {
 	width: 100%;
 	border-collapse: collapse;
+	margin-top: 2em; 
+	margin-bottom: 2em;
 }
 th,
 td {
@@ -122,24 +124,31 @@ img {
 }
 code {
 	padding: 2px 5px;
+	margin-top: 2em;
 	background-color: rgb(var(--gray-light));
 	border-radius: 2px;
 }
+
+/* Code Blocks */
 pre {
 	padding: 1.5em;
 	border-radius: 8px;
 	font-size: 0.75em;
 	overflow-x: auto;
+	margin-top: 2em;
+	margin-bottom: 2em;
 }
 pre > code {
 	all: unset;
 }
 blockquote {
 	border-left: 4px solid var(--accent);
+	/* padding: 0 0 0 20px; */
 	padding: 0 0 0 20px;
 	margin: 0px;
 	font-size: 1.333em;
 }
+
 hr {
 	border: none;
 	border-top: 1px solid rgb(var(--gray-light));
