@@ -5,15 +5,22 @@ import BaseHead from "../components/BaseHead.astro";
 import Footer from "../components/Footer.astro";
 import FormattedDate from "../components/FormattedDate.astro";
 import Header from "../components/Header.astro";
+import { readingTime } from "../scripts/reading-time";
 
-type Props = CollectionEntry<"blog">["data"];
+type BlogData = CollectionEntry<"blog">["data"];
+interface Props extends BlogData {
+	body?: string;
+	prevPost?: CollectionEntry<"blog"> | null;
+	nextPost?: CollectionEntry<"blog"> | null;
+}
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, tags, body, prevPost, nextPost } = Astro.props;
+const readTime = body ? readingTime(body) : null;
 ---
 
 <html lang="en">
 	<head>
-		<BaseHead title={title} description={description} />
+		<BaseHead title={title} description={description} type="article" pubDate={pubDate} />
 		<style>
 			main {
 				width: calc(100% - 2em);
@@ -54,11 +61,77 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 				margin-bottom: 0.5em;
 				color: rgb(var(--gray));
 			}
+			.reading-time {
+				color: rgb(var(--gray));
+			}
 			.last-updated-on {
 				font-style: italic;
 			}
 			.image-wrapper {
 				margin-bottom: 2.5em;
+			}
+			.post-tags {
+				display: inline-flex;
+				flex-wrap: wrap;
+				gap: 0.35rem;
+				vertical-align: middle;
+				margin-left: 0.4rem;
+			}
+			.post-tag {
+				font-size: 0.7em;
+				padding: 0.15em 0.6em;
+				border-radius: 999px;
+				background: rgba(46, 148, 21, 0.12);
+				color: var(--accent);
+				border: 1px solid rgba(46, 148, 21, 0.3);
+				vertical-align: middle;
+			}
+			.post-nav {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 1rem;
+				margin-top: 3rem;
+				padding-top: 2rem;
+				border-top: 1px solid rgba(229, 233, 240, 0.08);
+			}
+			.post-nav-item {
+				display: flex;
+				flex-direction: column;
+			}
+			.post-nav-item.next {
+				align-items: flex-end;
+				text-align: right;
+			}
+			.post-nav-item a {
+				display: flex;
+				flex-direction: column;
+				gap: 0.25rem;
+				text-decoration: none;
+				color: inherit;
+			}
+			.nav-label {
+				font-size: 0.75em;
+				color: rgba(229, 233, 240, 0.4);
+				text-transform: uppercase;
+				letter-spacing: 0.08em;
+			}
+			.nav-title {
+				font-size: 0.9em;
+				color: rgba(229, 233, 240, 0.7);
+				transition: color 0.15s;
+				line-height: 1.4;
+			}
+			.post-nav-item a:hover .nav-title {
+				color: var(--accent);
+			}
+			@media (max-width: 480px) {
+				.post-nav {
+					grid-template-columns: 1fr;
+				}
+				.post-nav-item.next {
+					align-items: flex-start;
+					text-align: left;
+				}
 			}
 
 			/* TOC — fixed strip spanning the free space right of the prose,
@@ -165,6 +238,12 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 						<div class="title">
 							<div class="date">
 								<FormattedDate date={pubDate} />
+								{readTime && <span class="reading-time"> · {readTime} min read</span>}
+								{tags && tags.length > 0 && (
+									<span class="post-tags">
+										{tags.map(tag => <span class="post-tag">{tag}</span>)}
+									</span>
+								)}
 								{
 									updatedDate && (
 										<div class="last-updated-on">
@@ -192,6 +271,26 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 							}
 						</div>
 						<slot />
+						{(prevPost || nextPost) && (
+							<nav class="post-nav">
+								<div class="post-nav-item prev">
+									{prevPost && (
+										<a href={`${import.meta.env.BASE_URL}/${prevPost.id}/`}>
+											<span class="nav-label">← Older</span>
+											<span class="nav-title">{prevPost.data.title}</span>
+										</a>
+									)}
+								</div>
+								<div class="post-nav-item next">
+									{nextPost && (
+										<a href={`${import.meta.env.BASE_URL}/${nextPost.id}/`}>
+											<span class="nav-label">Newer →</span>
+											<span class="nav-title">{nextPost.data.title}</span>
+										</a>
+									)}
+								</div>
+							</nav>
+						)}
 					</div>
 				</article>
 			</div>

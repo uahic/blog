@@ -1,7 +1,7 @@
 ---
 title: 'Dual RTX 3090 Local AI Setup'
 description: 'My current budget solution for AI training and inference'
-pubDate: 'April 20 2026'
+pubDate: '2026-04-20'
 heroImage: '../../assets/gpus/platine.png'
 tags: ['AI', 'Hardware']
 ---
@@ -47,11 +47,11 @@ My two RTX 3090s on the old PCIe Gen 3 board run in 8x/8x mode, giving each GPU 
 
 # Cooling options
 
-Simple. Either go with the stock fans or with water cooling. My first RTX 3090 shipped with an AIO (pump integrated + 360mm radiator) cooling block already (which had corrosion issues just half a year later) and my second had a pretty quality EW water block. I pondered whether to run them seperately or build one custom loop and went with the latter option, thereby also replacing the Alphacool EisWolf-2 water block of the first GPU alltogether (I will write a seperate blog post about this topic). 
+Simple. Either go with the stock fans or with water cooling. My first RTX 3090 shipped with an AIO (pump integrated + 360mm radiator) cooling block already (which had corrosion issues just half a year later) and my second had a pretty quality EW water block. I pondered whether to run them separately or build one custom loop and went with the latter option, thereby also replacing the Alphacool EisWolf-2 water block of the first GPU altogether (I will write a separate blog post about this topic). 
 
 I got a starter-set from Alphacool, including a pump, coolant liquid, a radiator, transparent soft-tubes and some fittings for around 180 Euros. After adding more fittings to get all components connected (3 radiators, CPU, 2x GPU, water pump, temperature measure device) it was far more expensive than I hoped it would be. 
 
-Another issue: how many radiators are required to get a half-way quiet system and dissapate up to 700W peak? (neglecting the CPU which is a moderate Ryzen 5 2600 in my case)? The answer is: the more, the better. But only a few PC cases can host more than 2-3 360mm radiators. If you really want to push the limits, go for the [Phantek Enthoo Pro 2 Server](https://phanteks.com/product/enthoo-pro-2-server-edition-tg/) case. The materials are having a little bit a cheap feeling but it does have plenty of space for water cooling solutions at roughly 180 Euros. AND it is designed for more-than-usual PCIe slots, which comes in handy if you want to have 3, 4, 5 or 6 GPUs (depending on their slot-widths).  
+Another issue: how many radiators are required to get a half-way quiet system and dissipate up to 700W peak? (neglecting the CPU which is a moderate Ryzen 5 2600 in my case)? The answer is: the more, the better. But only a few PC cases can host more than 2-3 360mm radiators. If you really want to push the limits, go for the [Phantek Enthoo Pro 2 Server](https://phanteks.com/product/enthoo-pro-2-server-edition-tg/) case. The materials are having a little bit a cheap feeling but it does have plenty of space for water cooling solutions at roughly 180 Euros. AND it is designed for more-than-usual PCIe slots, which comes in handy if you want to have 3, 4, 5 or 6 GPUs (depending on their slot-widths).  
 
 I really wanted to recycle my [BeQuiet SilentBase 601](https://www.bequiet.com/en/case/1506) case but it only allows for 2x 360mm radiators and I had a third one (240mm) already around. This was then solved via an angle grinder and sacrificing the hard-drive bay-slots and cutting a rectangle into the right cover of the case, some drilling to mount 12" fans and dust-protection on top. 
 
@@ -155,4 +155,4 @@ if __name__ == "__main__":
 
 # Benchmarks
 
-Comming soon.
+Coming soon.
