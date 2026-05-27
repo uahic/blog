@@ -1,7 +1,7 @@
 ---
 title: 'Dual RTX 3090 Local AI Setup'
 description: 'My current budget solution for AI training and inference'
-pubDate: 'May 26 2026'
+pubDate: 'April 20 2026'
 heroImage: '../../assets/gpus/platine.png'
 tags: ['AI', 'Hardware']
 ---
@@ -17,7 +17,7 @@ Budget: max 2000-3000 Euros.
 I compared dozens of GPUs: NVIDIA A2000 up to A6000, used H100s, Intel B70 Arc (considered them recently as they were announced), 4090s and even older datacenter cards such as the NVIDIA Tesla P40 (24GB). The P40 are not rarely as low as 200 Euros on Ebay. However, it is a quite old GPU, unlikely to support modern CUDA features/instructions - which is a no-starter for me. The mentioned NVIDIA cards are either too expensive or could not compete to the RTX 3090 in terms of value. 
 The only competitor I could see was the Intel Arc B770. A new B770 is roughly 20-30% more expensive than a used RTX 3090 but the memory bandwidth (~456 GB/s) vs the 3090's 936 GB/s can't compete. Also, the compute power of the 3090 is superior: the RTX 3090 delivers 35.6 TFLOPS FP32 and benefits from the mature CUDA ecosystem, while Intel's oneAPI support in PyTorch and JAX is still catching up. 
 
-## The Mainboard and influence of the PCIe speed
+# The Mainboard and influence of the PCIe speed
 Every modern mainboard usually has at least one PCIe slot with 16 lanes connected to the CPU. The problems start if you want to plug in two GPUs. Now you need 32 lanes just for the GPUs but the consumer AMD and Intel CPUs only offer up to 28 (AMD Ryzen 7000/9000) and 24 (Intel 13.,14. Gen) for GPU usage, respectively. And trust me, I've checked this intensively. The best compromise you can get are mainboards which switch into a 8x/8x mode if two GPUs are present. Yes, this means the communication between CPU and each GPU is now only at 50% of the possible maximum limit. If you want both GPUs at 16x, you will need a workstation or server mainboard which do come at a higher price tag.
 
 Does it matter? It depends.
@@ -29,7 +29,7 @@ For the RTX 3090 PCIe gen 4 is ideal and with this particular GPU you will not b
 
 ![Both GPUs depicted from near-view](../../assets/gpus/setup-1.png)
 
-## RTX 3090 NVLink
+# RTX 3090 NVLink
 The RTX 3090 is the last consumer GPU to support the NVLink connectors which lets both GPUs share and unify their memory at a bandwidth of 100 GB/s. This allows you to have 48GB of VRAM at your disposal. So I bought a second RTX 3090 of the same manufacturer and same model (just to be sure not to run into issues). If you are looking of an NVLink, be sure it is the right one for the 3090 and bridges the correct amount of standardized PCIe slot widths. I measured the required distance using a ruler on my Asus Hero 6 Crosshair (DDR3) Mainboard and determined to need a 3-slot NVLink. Don't bother even searching in European second hand markets for them, they have become really rare. Just search on Ebay for merchants from China and consider they cost roughly 250 Euros. 
 
 Using the NVLink bypasses at least the previous 8x/8x PCIe gen 3 bottleneck in GPU-to-GPU communication on my old mainboard and is even faster than if I had a gen 4 board - which would be 32 GB/s! compared to the 100 GB/s of the NVLink.
@@ -45,7 +45,7 @@ Using the NVLink bypasses at least the previous 8x/8x PCIe gen 3 bottleneck in G
 My two RTX 3090s on the old PCIe Gen 3 board run in 8x/8x mode, giving each GPU **8 GB/s** to the CPU. On a PCIe Gen 4 board in 8x/8x mode that would double to **16 GB/s** — still well below the NVLink's **100 GB/s** for GPU-to-GPU traffic.
 
 
-## Cooling options
+# Cooling options
 
 Simple. Either go with the stock fans or with water cooling. My first RTX 3090 shipped with an AIO (pump integrated + 360mm radiator) cooling block already (which had corrosion issues just half a year later) and my second had a pretty quality EW water block. I pondered whether to run them seperately or build one custom loop and went with the latter option, thereby also replacing the Alphacool EisWolf-2 water block of the first GPU alltogether (I will write a seperate blog post about this topic). 
 
@@ -153,6 +153,6 @@ if __name__ == "__main__":
 ```
 
 
-## Benchmarks
+# Benchmarks
 
 Comming soon.
