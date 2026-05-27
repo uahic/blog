@@ -12,37 +12,41 @@ const description = "A little bit about me.";
         <BaseHead title={title} description={description} />
         <style>
             .about-header {
-                margin-bottom: 2em;
+                margin-bottom: 2.5em;
             }
             .about-header h1 {
-                margin-bottom: 0.25em;
+                margin-bottom: 0.3em;
             }
             .subtitle {
                 color: rgb(var(--gray));
-                font-size: 1.1em;
+                font-size: 1em;
                 margin: 0;
+                letter-spacing: 0.01em;
             }
             section {
-                margin-bottom: 2.5em;
+                margin-bottom: 3em;
             }
             section h2 {
-                font-size: 1.563em;
-                border-bottom: 1px solid rgb(var(--gray-light));
-                padding-bottom: 0.25em;
-                margin-bottom: 0.75em;
+                font-size: 1.15em;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                color: rgb(var(--gray));
+                margin-bottom: 0.85em;
             }
             .tags {
                 display: flex;
                 flex-wrap: wrap;
                 gap: 0.5em;
-                margin-top: 0.5em;
+                margin-top: 0.25em;
             }
             .tag {
-                background-color: rgba(var(--gray), 0.2);
-                border: 1px solid rgba(var(--gray), 0.4);
-                border-radius: 4px;
-                padding: 0.2em 0.6em;
-                font-size: 0.85em;
+                background-color: rgba(var(--gray), 0.12);
+                border: 1px solid rgba(var(--gray), 0.3);
+                border-radius: 6px;
+                padding: 0.25em 0.75em;
+                font-size: 0.82em;
+                letter-spacing: 0.01em;
             }
             .contact-list {
                 list-style: none;
@@ -50,7 +54,7 @@ const description = "A little bit about me.";
                 margin: 0;
             }
             .contact-list li {
-                margin-bottom: 0.4em;
+                margin-bottom: 0.5em;
             }
         </style>
     </head>

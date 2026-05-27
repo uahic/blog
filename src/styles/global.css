@@ -34,7 +34,7 @@
 	font-display: swap;
 }
 body {
-	font-family: "Atkinson", sans-serif;
+	font-family: "Atkinson", system-ui, sans-serif;
 	margin: 0;
 	padding: 0;
 	text-align: left;
@@ -45,8 +45,8 @@ body {
 	overflow-wrap: break-word;
 	/* color: rgb(var(--gray-dark)); */
 	color: rgb(var(--gray-light));
-	font-size: 20px;
-	line-height: 1.7;
+	font-size: 19px;
+	line-height: 1.75;
 }
 main {
 	width: 720px;
@@ -60,25 +60,29 @@ h3,
 h4,
 h5,
 h6 {
-	margin: 0 0 0.5rem 0;
+	margin: 0 0 0.75rem 0;
 	/* color: rgb(var(--black)); */
 	color: rgb(var(--gray-light));
-	line-height: 1.2;
+	line-height: 1.15;
+	font-weight: 700;
 }
 h1 {
-	font-size: 3.052em;
+	font-size: 2.5em;
+	letter-spacing: -0.025em;
 }
 h2 {
-	font-size: 2.441em;
+	font-size: 1.75em;
+	letter-spacing: -0.015em;
 }
 h3 {
-	font-size: 1.953em;
+	font-size: 1.35em;
+	letter-spacing: -0.01em;
 }
 h4 {
-	font-size: 1.563em;
+	font-size: 1.15em;
 }
 h5 {
-	font-size: 1.25em;
+	font-size: 1em;
 }
 strong,
 b {
@@ -94,7 +98,11 @@ p {
 	margin-bottom: 1em;
 }
 .prose p {
-	margin-bottom: 2em;
+	margin-bottom: 1.75em;
+}
+* + h2,
+* + h3 {
+	margin-top: 1.75em;
 }
 textarea {
 	width: 100%;
@@ -123,10 +131,11 @@ img {
 	border-radius: 8px;
 }
 code {
-	padding: 2px 5px;
-	margin-top: 2em;
-	background-color: rgb(var(--gray-light));
-	border-radius: 2px;
+	padding: 0.15em 0.45em;
+	font-size: 0.875em;
+	background-color: rgba(var(--gray), 0.18);
+	border-radius: 4px;
+	font-family: ui-monospace, "Cascadia Code", "Fira Code", monospace;
 }
 
 /* Code Blocks */
@@ -142,11 +151,12 @@ pre > code {
 	all: unset;
 }
 blockquote {
-	border-left: 4px solid var(--accent);
-	/* padding: 0 0 0 20px; */
-	padding: 0 0 0 20px;
-	margin: 0px;
-	font-size: 1.333em;
+	border-left: 3px solid var(--accent);
+	padding: 0.5em 0 0.5em 1.25em;
+	margin: 1.5em 0;
+	font-size: 1.1em;
+	font-style: italic;
+	color: rgb(var(--gray));
 }
 
 hr {
