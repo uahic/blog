@@ -1,5 +1,5 @@
 ---
-title: 'Dual RTX 3090 Local AI Setup'
+title: 'Dual RTX 3090<br>Local AI Setup'
 description: 'My current budget solution for AI training and inference'
 pubDate: '2026-04-20'
 heroImage: '../../assets/gpus/platine.png'

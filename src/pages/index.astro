@@ -236,7 +236,7 @@ const allTags = [...new Set(posts.flatMap((p) => p.data.tags ?? []))].sort();
 								</div>
 								<div class="post-body">
 									<a href={`${import.meta.env.BASE_URL}/${post.id}/`}>
-										<h4 class="post-title">{post.data.title}</h4>
+										<h4 class="post-title" set:html={post.data.title.replace(/<[^>]*>/g, ' ')} />
 									</a>
 									{post.data.description && (
 										<p class="post-description">{post.data.description}</p>

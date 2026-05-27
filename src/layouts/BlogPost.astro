@@ -15,12 +15,13 @@ interface Props extends BlogData {
 }
 
 const { title, description, pubDate, updatedDate, heroImage, tags, body, prevPost, nextPost } = Astro.props;
+const plainTitle = title.replace(/<[^>]*>/g, "");
 const readTime = body ? readingTime(body) : null;
 ---
 
 <html lang="en">
 	<head>
-		<BaseHead title={title} description={description} type="article" pubDate={pubDate} />
+		<BaseHead title={plainTitle} description={description} type="article" pubDate={pubDate} />
 		<style>
 			main {
 				width: calc(100% - 2em);
@@ -253,7 +254,7 @@ const readTime = body ? readingTime(body) : null;
 									)
 								}
 							</div>
-							<h1>{title}</h1>
+							<h1 set:html={title} />
 							<hr />
 						</div>
 						<div class="image-wrapper">
