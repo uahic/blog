@@ -5,7 +5,7 @@ import BaseHead from "../components/BaseHead.astro";
 import Footer from "../components/Footer.astro";
 import FormattedDate from "../components/FormattedDate.astro";
 import Header from "../components/Header.astro";
-import { readingTime } from "../scripts/reading-time";
+import { readingTime, stripHtml } from "../scripts/reading-time";
 
 type BlogData = CollectionEntry<"blog">["data"];
 interface Props extends BlogData {
@@ -14,14 +14,29 @@ interface Props extends BlogData {
 	nextPost?: CollectionEntry<"blog"> | null;
 }
 
-const { title, description, pubDate, updatedDate, heroImage, tags, body, prevPost, nextPost } = Astro.props;
-const plainTitle = title.replace(/<[^>]*>/g, "");
+const {
+	title,
+	description,
+	pubDate,
+	updatedDate,
+	heroImage,
+	tags,
+	body,
+	prevPost,
+	nextPost,
+} = Astro.props;
+const plainTitle = stripHtml(title);
 const readTime = body ? readingTime(body) : null;
 ---
 
 <html lang="en">
 	<head>
-		<BaseHead title={plainTitle} description={description} type="article" pubDate={pubDate} />
+		<BaseHead
+			title={plainTitle}
+			description={description}
+			type="article"
+			pubDate={pubDate}
+		/>
 		<style>
 			main {
 				width: calc(100% - 2em);
@@ -146,7 +161,7 @@ const readTime = body ? readingTime(body) : null;
 					justify-content: center;
 					align-items: flex-start;
 					position: fixed;
-					top: 5rem;
+					top: 8rem;
 					/* start right at the prose right edge */
 					left: calc(50vw + 360px);
 					right: 0;
@@ -239,12 +254,25 @@ const readTime = body ? readingTime(body) : null;
 						<div class="title">
 							<div class="date">
 								<FormattedDate date={pubDate} />
-								{readTime && <span class="reading-time"> · {readTime} min read</span>}
-								{tags && tags.length > 0 && (
-									<span class="post-tags">
-										{tags.map(tag => <span class="post-tag">{tag}</span>)}
-									</span>
-								)}
+								{
+									readTime && (
+										<span class="reading-time">
+											{" "}
+											· {readTime} min read
+										</span>
+									)
+								}
+								{
+									tags && tags.length > 0 && (
+										<span class="post-tags">
+											{tags.map((tag) => (
+												<span class="post-tag">
+													{tag}
+												</span>
+											))}
+										</span>
+									)
+								}
 								{
 									updatedDate && (
 										<div class="last-updated-on">
@@ -272,26 +300,44 @@ const readTime = body ? readingTime(body) : null;
 							}
 						</div>
 						<slot />
-						{(prevPost || nextPost) && (
-							<nav class="post-nav">
-								<div class="post-nav-item prev">
-									{prevPost && (
-										<a href={`${import.meta.env.BASE_URL}/${prevPost.id}/`}>
-											<span class="nav-label">← Older</span>
-											<span class="nav-title">{prevPost.data.title}</span>
-										</a>
-									)}
-								</div>
-								<div class="post-nav-item next">
-									{nextPost && (
-										<a href={`${import.meta.env.BASE_URL}/${nextPost.id}/`}>
-											<span class="nav-label">Newer →</span>
-											<span class="nav-title">{nextPost.data.title}</span>
-										</a>
-									)}
-								</div>
-							</nav>
-						)}
+						{
+							(prevPost || nextPost) && (
+								<nav class="post-nav">
+									<div class="post-nav-item prev">
+										{prevPost && (
+											<a
+												href={`${import.meta.env.BASE_URL}/${prevPost.id}/`}
+											>
+												<span class="nav-label">
+													← Older
+												</span>
+												<span class="nav-title">
+													{stripHtml(
+														prevPost.data.title,
+													)}
+												</span>
+											</a>
+										)}
+									</div>
+									<div class="post-nav-item next">
+										{nextPost && (
+											<a
+												href={`${import.meta.env.BASE_URL}/${nextPost.id}/`}
+											>
+												<span class="nav-label">
+													Newer →
+												</span>
+												<span class="nav-title">
+													{stripHtml(
+														nextPost.data.title,
+													)}
+												</span>
+											</a>
+										)}
+									</div>
+								</nav>
+							)
+						}
 					</div>
 				</article>
 			</div>
@@ -307,11 +353,20 @@ const readTime = body ? readingTime(body) : null;
 		<script>
 			// exclude the post title h1 which lives inside .title
 			const headings = Array.from(
-				document.querySelectorAll("article h1, article h2, article h3")
+				document.querySelectorAll("article h1, article h2, article h3"),
 			).filter((h) => !h.closest(".title"));
 			const tocList = document.getElementById("toc-list");
 
-			if (tocList && headings.length > 0) {
+			const sidebar = document.querySelector(
+				".toc-sidebar",
+			) as HTMLElement | null;
+			const noScroll =
+				document.documentElement.scrollHeight <= window.innerHeight;
+			if (sidebar && (headings.length < 1 || noScroll)) {
+				sidebar.style.display = "none";
+			}
+
+			if (tocList && headings.length >= 1 && !noScroll) {
 				headings.forEach((heading, index) => {
 					if (!heading.id) heading.id = `heading-${index}`;
 
@@ -332,11 +387,16 @@ const readTime = body ? readingTime(body) : null;
 				function updateActive() {
 					let current: Element | null = null;
 					for (const h of headings) {
-						if (h.getBoundingClientRect().top <= HEADER_HEIGHT + 8) {
+						if (
+							h.getBoundingClientRect().top <=
+							HEADER_HEIGHT + 8
+						) {
 							current = h;
 						}
 					}
-					tocList.querySelectorAll("a").forEach((a) => a.classList.remove("active"));
+					tocList
+						.querySelectorAll("a")
+						.forEach((a) => a.classList.remove("active"));
 					if (current) {
 						tocList
 							.querySelector(`a[href="#${current.id}"]`)
@@ -344,7 +404,9 @@ const readTime = body ? readingTime(body) : null;
 					}
 				}
 
-				window.addEventListener("scroll", updateActive, { passive: true });
+				window.addEventListener("scroll", updateActive, {
+					passive: true,
+				});
 				updateActive();
 			}
 		</script>

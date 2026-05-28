@@ -1,3 +1,7 @@
+export function stripHtml(s: string): string {
+    return s.replace(/<[^>]*>/g, " ");
+}
+
 export function readingTime(text: string): number {
     const wpm = 225;
     const words = text.trim().split(/\s+/).length;
