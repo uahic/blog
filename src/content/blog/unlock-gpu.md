@@ -12,7 +12,7 @@ My [dual RTX 3090 setup](/blog/local-ai-dual-rtx3090) solved the VRAM problem vi
 
 NVIDIA ships the same Ampere silicon (GA102/103/104/106) in both consumer and professional cards, but the consumer driver artificially halves the instruction-issue rate for FP16/BF16-into-FP32 fused multiply-add — exactly the operation that dominates LLM prefill, diffusion models and FlashAttention. [Zagitta/gpu-unlock](https://github.com/Zagitta/gpu-unlock) is an open-source Linux kernel module that patches the GPU's firmware before the NVIDIA driver loads it, removing that artificial limit. Reported gains on dense matrix workloads are in the 70-80% range, at zero hardware cost, opt-in via a kernel command-line flag, with outputs verified bit-identical to the unpatched card in testing. The only runtime cost is about a second added to suspend/resume.
 
-This post documents getting it built and running on NixOS, manually first and then as a permanent part of my system config. The actual benchmark numbers — single RTX 3090 and dual — are in a [separate post](/gpu-unlock-benchmark).
+This post documents getting it built and running on NixOS, manually first and then as a permanent part of my system config. The actual benchmark numbers — single RTX 3090 and dual — are in a [separate post](/blog/gpu-unlock-benchmark).
 
 # Building it on NixOS (with flakes)
 
