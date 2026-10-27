@@ -6,15 +6,19 @@ heroImage: '../../assets/gpus/unlock_gpu_nix.jpg'
 tags: ['AI', 'Hardware']
 ---
 
-# Why unlock a gaming GPU's math units
+# Introduction
 
-My [dual RTX 3090 setup](/blog/local-ai-dual-rtx3090) solved the VRAM problem via NVLink, pooling both cards into 48GB. It didn't touch compute throughput, though. 
+Here's the short version, before the jargon starts: NVIDIA's gaming GPUs and its expensive "professional" AI cards are often built from the exact same silicon. The gaming version isn't worse hardware — the driver just deliberately runs certain math operations at half speed, specifically the kind of math that dominates AI workloads like running local language models. Open-source developers have figured out how to undo it: a small piece of software that patches the GPU's own firmware to remove the artificial cap. A benchmark for the RTX 3090 can be found here: [separate post](/blog/gpu-unlock-benchmark).
 
 NVIDIA ships the same Ampere silicon (GA102/103/104/106) in both consumer and professional cards, but the consumer driver artificially halves the instruction-issue rate for FP16/BF16-into-FP32 fused multiply-add — exactly the operation that dominates LLM prefill, diffusion models and FlashAttention. [Zagitta/gpu-unlock](https://github.com/Zagitta/gpu-unlock) is an open-source Linux kernel module that patches the GPU's firmware before the NVIDIA driver loads it, removing that artificial limit. Reported gains on dense matrix workloads are in the 70-80% range, at zero hardware cost, opt-in via a kernel command-line flag, with outputs verified bit-identical to the unpatched card in testing. The only runtime cost is about a second added to suspend/resume.
 
-This post documents getting it built and running on NixOS, manually first and then as a permanent part of my system config. The actual benchmark numbers — single RTX 3090 and dual — are in a [separate post](/blog/gpu-unlock-benchmark).
+The rest of this post documents getting it built and running on NixOS, a specific Linux distribution I use on my workstation. 
+
+For Ubuntu, Debian etc. you won't need to bother with this blog post and just go through the README of the [original unlock-gpu repository](https://github.com/Zagitta/gpu-unlock). 
 
 # Building it on NixOS (with flakes)
+
+Quick definition for anyone who isn't already living in NixOS: a *flake* is just a Nix project described by a `flake.nix` file that pins its exact dependencies — and a `flake.lock` that pins their precise versions — so a whole system configuration becomes reproducible and git-versionable instead of being whatever happens to be installed by hand. My NixOS config is set up as a flake, which is the standard way to do it today, and the commands below assume that. If your `/etc/nixos` is still a classic, non-flake config, I've added the equivalent command at each flake-specific step.
 
 gpu-unlock ships a Makefile that assumes a traditional FHS distro: `make install` probes for Arch, Debian or Fedora and refuses to run anywhere else ("Unsupported distribution: nixos"), and its `install-*` targets write straight into `/usr` and `/etc` — both of which NixOS treats as immutable/declarative and simply ignores. None of that matters for the actual build targets though; those are normal Make rules and can be driven by hand.
 
@@ -48,6 +52,14 @@ This assumes `/etc/nixos` is itself a flake and exposes a `nixosConfigurations` 
 - The first line walks into the evaluated NixOS module system — the same `config` referenced inside any NixOS module — down to `boot.kernelPackages.kernel.dev`, i.e. the headers/build-infrastructure output for the kernel this system actually boots (the NixOS equivalent of `linux-headers`/`kernel-devel`). `nix build --no-link --print-out-paths` builds (or pulls from the binary cache) that output and prints its `/nix/store` path instead of creating a `./result` symlink, so it can be captured straight into `$KDEV`.
 - The second line uses `nix develop` on `boot.kernelPackages.kernel` itself (not `.dev`) to drop into the exact build environment that kernel was compiled in — same compiler, same build inputs. That matters because a compiler mismatch between the running kernel and an out-of-tree module is a common cause of modules that build but fail to load. Inside that environment it runs `make -C kernel/gpu_unlock`, pointing `KDIR` at the headers path resolved in the first line — the standard variable out-of-tree kernel module Makefiles expect.
 
+> **Without flakes:** no `nixosConfigurations` output to point at, so fall back to the classic NIX_PATH entry point (`<nixpkgs/nixos>`, which evaluates `/etc/nixos/configuration.nix`) with `nix-build`/`nix-shell` instead of `nix build`/`nix develop`:
+> ```sh
+> KDEV=$(nix-build '<nixpkgs/nixos>' -A config.boot.kernelPackages.kernel.dev --no-out-link)
+> nix-shell '<nixpkgs/nixos>' -A config.boot.kernelPackages.kernel \
+>   --run "make -C kernel/gpu_unlock KDIR=$KDEV/lib/modules/$(uname -r)/build"
+> ```
+> Same two steps, same reasoning — just the pre-flake Nix commands instead of their newer `nix <subcommand>` equivalents.
+
 The result is `kernel/gpu_unlock/gpu_unlock.ko` — a loadable kernel module I can load by hand with `insmod`.
 
 # Making it permanent
@@ -74,6 +86,17 @@ gpu-unlock = {
   flake = false;
 };
 ```
+
+> **Without flakes:** there's no inputs list to add to, so fetch the source directly inside `modules/gpu-unlock.nix` instead, pinned by hash rather than a lockfile:
+> ```nix
+> gpuUnlockSrc = pkgs.fetchFromGitHub {
+>   owner = "Zagitta";
+>   repo = "gpu-unlock";
+>   rev = "<commit hash or tag>";
+>   sha256 = "<hash>";  # start with lib.fakeSha256, paste in the real hash Nix prints on the failed first build
+> };
+> ```
+> Then use `src = gpuUnlockSrc;` in both derivations below instead of `src = inputs.gpu-unlock;` — everything else, including importing the module into `configuration.nix`, stays exactly the same. No `flake.nix` needed anywhere.
 
 Then two derivations in a new `modules/gpu-unlock.nix` (with `kernel = config.boot.kernelPackages.kernel;` and `nvVersion = "610.43.03";` defined once at the top, and `inputs.gpu-unlock` referring to the flake input above). The firmware one needs network access — `make inputs` downloads ~340MB from NVIDIA — which a normal sandboxed Nix build refuses outright. The fix is a *fixed-output derivation*: Nix allows network access whenever the output is going to be verified by a pinned hash anyway, sandbox or not.
 
@@ -145,10 +168,16 @@ boot.kernelParams = ["gpu_unlock.targets=all"];
 
 One thing worth double-checking before trusting any of this: the firmware patches are generated from NVIDIA driver release 610.43.03, while my actually-installed driver resolves to 580.119.02 — nixpkgs doesn't even offer 610.43.03 as an option. Turns out it doesn't matter. gpu-unlock patches the GSP firmware blob the GPU's own onboard processor runs, not the host driver, and that blob is identical across driver releases — the project is explicitly built so it "does not require manual patching each time nvidia releases a new driver version." 610.43.03 is just wherever they happened to pull a reference copy of it from.
 
-`sudo nixos-rebuild switch --flake .#nixos`, reboot, and:
+`sudo nixos-rebuild switch --flake .#nixos` (just `sudo nixos-rebuild switch` without flakes), reboot, and:
 
 ```
 $ dmesg | grep -i gpu_unlock
 ```
 
-Both RTX 3090s report as unlocked. Numbers are in the [benchmark post](/blog/gpu-unlock-benchmark).
+The result should look like this:
+```
+[    2.631012] pci 0000:0b:00.0: gpu_unlock: unlocked
+```
+Otherwise, you will get no result which implies that it isn't working yet.
+
+In my case, both RTX 3090s report as unlocked. Numbers are in the [benchmark post](/blog/gpu-unlock-benchmark).

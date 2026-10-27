@@ -6,13 +6,15 @@ heroImage: '../../assets/gpus/unlock_gpu.jpg'
 tags: ['AI', 'Hardware']
 ---
 
-This is the numbers half of [getting gpu-unlock running on NixOS](/unlock-gpu). Quick recap: [Zagitta/gpu-unlock](https://github.com/Zagitta/gpu-unlock) patches the GSP firmware on consumer Ampere GPUs to double the FP16/BF16-into-FP32 FMA issue rate NVIDIA otherwise reserves for professional cards — with reported gains of 70-80% on dense matrix workloads, exactly what LLM prefill, diffusion and FlashAttention lean on.
+Here's the short version, before the numbers start: a [previous post](/blog/unlock-gpu) found a free, software-only way to remove an artificial speed cap NVIDIA puts on gaming GPUs for exactly the kind of math AI workloads lean on. This post is the proof — real benchmarks showing how much faster things actually get, whether the results are still correct, and whether the card overheats doing it. Short answer to all three: yes, genuinely faster (not a rounding error); yes, output is still bit-identical; no, it doesn't throttle.
 
-Plan: single RTX 3090 unlocked vs. stock, then both unlocked vs. both stock, using `gpu_unlock.targets` to toggle which cards are patched per run. Benchmark code is Claude Opus 5.5 vibe-coded (life is short).
+Quick recap: [Zagitta/gpu-unlock](https://github.com/Zagitta/gpu-unlock) patches the GSP firmware on consumer Ampere GPUs to double the FP16/BF16-into-FP32 FMA issue rate NVIDIA otherwise reserves for professional cards — with reported gains of 70-80% on dense matrix workloads, exactly what LLM prefill, diffusion and FlashAttention lean on.
+
+The benchmark code is Claude Opus 5.5 vibe-coded (life is short).
 
 # Benchmarks
 
-Both runs below are on a single RTX 3090 (device index 1 on this box), `gpu_unlock.targets` toggled between the two and nothing else touched — same kernel, same driver, same PyTorch build. The only variable is whether the GSP firmware patch is loaded.
+Both runs below are on a single RTX 3090 (device index 1 on this box), one time with patch and the other without. 
 
 <div class="gb">
 <style>
@@ -297,5 +299,3 @@ Both runs sit at the 350 W power limit for essentially the entire 15 minutes (po
 ## Takeaway
 
 On the operation it actually targets &mdash; FP16/BF16/TF32 feeding an FP32 accumulator &mdash; `gpu-unlock` gets this RTX 3090 from ~50% to ~97% of its theoretical per-clock rate, a ~1.6&ndash;1.9&times; real throughput gain that shows up all the way through a toy GPT training step (+40% tokens/s). Everything unaffected by the patch (FP16-with-FP16-accumulate, FP32, INT8) stays flat within noise, output hashes are bit-identical, and under 15 minutes of sustained load neither run throttles &mdash; the card just runs its clock about 300 MHz lower when there's more work to do per cycle at the same 350 W. For a single card that didn't cost anything beyond building a kernel module, that's a good trade.
-
-Dual-GPU numbers (both unlocked vs. both stock) will follow soon but also not revealing much interesting new things &mdash; this post covers the single-card case only.

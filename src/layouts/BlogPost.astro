@@ -4,17 +4,21 @@ import type { CollectionEntry } from "astro:content";
 import BaseHead from "../components/BaseHead.astro";
 import Footer from "../components/Footer.astro";
 import FormattedDate from "../components/FormattedDate.astro";
+import Giscus from "../components/Giscus.astro";
 import Header from "../components/Header.astro";
+// import ViewCounter from "../components/ViewCounter"; // disabled until backend/viewcounter is deployed
 import { readingTime, stripHtml } from "../scripts/reading-time";
 
 type BlogData = CollectionEntry<"blog">["data"];
 interface Props extends BlogData {
+	slug: string;
 	body?: string;
 	prevPost?: CollectionEntry<"blog"> | null;
 	nextPost?: CollectionEntry<"blog"> | null;
 }
 
 const {
+	slug,
 	title,
 	description,
 	pubDate,
@@ -263,6 +267,9 @@ const readTime = body ? readingTime(body) : null;
 									)
 								}
 								{
+									/* <ViewCounter slug={slug} client:load /> */
+								}
+								{
 									tags && tags.length > 0 && (
 										<span class="post-tags">
 											{tags.map((tag) => (
@@ -339,6 +346,7 @@ const readTime = body ? readingTime(body) : null;
 							)
 						}
 					</div>
+					<Giscus />
 				</article>
 			</div>
 		</main>

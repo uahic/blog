@@ -173,6 +173,65 @@ hr {
 	}
 }
 
+/* Contact form — styled here (not scoped in contact.astro) because the form
+   markup is rendered client-side by the Solid island, which Astro's
+   per-component scoped CSS cannot reach. */
+.contact-form {
+	display: flex;
+	flex-direction: column;
+	gap: 1.25em;
+	max-width: 480px;
+}
+.contact-form label {
+	display: flex;
+	flex-direction: column;
+	gap: 0.4em;
+	font-size: 0.85em;
+	color: rgb(var(--gray));
+}
+.contact-form input[type="text"],
+.contact-form input[type="email"],
+.contact-form textarea {
+	font: inherit;
+	color: rgb(var(--gray-light));
+	background-color: rgba(var(--gray), 0.12);
+	border: 1px solid rgba(var(--gray), 0.3);
+	border-radius: 6px;
+	padding: 0.6em 0.75em;
+	resize: vertical;
+}
+.contact-form input:focus,
+.contact-form textarea:focus {
+	outline: none;
+	border-color: var(--accent);
+}
+.contact-form button {
+	font: inherit;
+	font-weight: 600;
+	color: #fff;
+	background-color: var(--accent);
+	border: none;
+	border-radius: 6px;
+	padding: 0.65em 1.2em;
+	width: fit-content;
+	cursor: pointer;
+	transition: opacity 0.2s ease;
+}
+.contact-form button:disabled {
+	opacity: 0.6;
+	cursor: default;
+}
+.form-message {
+	font-size: 0.9em;
+	margin: 0;
+}
+.form-message.success {
+	color: var(--accent);
+}
+.form-message.error {
+	color: #e05c5c;
+}
+
 .sr-only {
 	border: 0;
 	padding: 0;

@@ -1,0 +1,43 @@
+---
+import BaseHead from "../components/BaseHead.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import ContactForm from "../components/ContactForm";
+
+const title = "Contact";
+const description = "Get in touch.";
+---
+
+<html lang="en">
+    <head>
+        <BaseHead title={title} description={description} />
+        <style>
+            .contact-header {
+                margin-bottom: 2.5em;
+            }
+            .contact-header h1 {
+                margin-bottom: 0.3em;
+            }
+            .subtitle {
+                color: rgb(var(--gray));
+                font-size: 1em;
+                margin: 0;
+                letter-spacing: 0.01em;
+            }
+        </style>
+    </head>
+
+    <body>
+        <Header />
+        <main>
+            <div class="contact-header">
+                <h1>Contact</h1>
+                <p class="subtitle">Questions, feedback, or just want to say hi?</p>
+            </div>
+
+            <ContactForm client:load />
+        </main>
+        <Footer />
+        <script is:inline src="https://web3forms.com/client/script.js" async defer></script>
+    </body>
+</html>

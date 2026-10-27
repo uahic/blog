@@ -1,0 +1,36 @@
+---
+import {
+	GISCUS_CATEGORY,
+	GISCUS_CATEGORY_ID,
+	GISCUS_REPO,
+	GISCUS_REPO_ID,
+} from '../consts';
+---
+
+<section class="giscus-wrapper">
+	<script
+		src="https://giscus.app/client.js"
+		data-repo={GISCUS_REPO}
+		data-repo-id={GISCUS_REPO_ID}
+		data-category={GISCUS_CATEGORY}
+		data-category-id={GISCUS_CATEGORY_ID}
+		data-mapping="pathname"
+		data-strict="0"
+		data-reactions-enabled="1"
+		data-emit-metadata="0"
+		data-input-position="bottom"
+		data-theme="transparent_dark"
+		data-lang="en"
+		data-loading="lazy"
+		crossorigin="anonymous"
+		async
+	></script>
+</section>
+
+<style>
+	.giscus-wrapper {
+		margin-top: 3rem;
+		padding-top: 2rem;
+		border-top: 1px solid rgba(229, 233, 240, 0.08);
+	}
+</style>

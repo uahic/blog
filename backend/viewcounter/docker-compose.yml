@@ -1,0 +1,16 @@
+services:
+  viewcounter:
+    build:
+      context: .
+      dockerfile: Containerfile
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - ALLOWED_ORIGIN=https://uahic.github.io
+      - DB_PATH=/data/views.db
+    volumes:
+      - viewcounter-data:/data
+
+volumes:
+  viewcounter-data:
